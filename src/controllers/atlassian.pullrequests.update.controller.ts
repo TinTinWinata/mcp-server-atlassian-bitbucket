@@ -49,9 +49,14 @@ async function update(
 		}
 
 		// Validate that at least one field to update is provided
-		if (!mergedOptions.title && !mergedOptions.description) {
+		const hasReviewers = mergedOptions.reviewers !== undefined;
+		if (
+			!mergedOptions.title &&
+			!mergedOptions.description &&
+			!hasReviewers
+		) {
 			throw new Error(
-				'At least one field to update (title or description) must be provided',
+				'At least one field to update (title, description, or reviewers) must be provided',
 			);
 		}
 
@@ -74,6 +79,27 @@ async function update(
 			serviceParams.description = optimizeBitbucketMarkdown(
 				mergedOptions.description,
 			);
+		}
+		if (hasReviewers) {
+			// Map account IDs to the reviewer reference shape Bitbucket expects
+			serviceParams.reviewers = (mergedOptions.reviewers ?? []).map(
+				(accountId) => ({ account_id: accountId }),
+			);
+
+			// Bitbucket's PUT endpoint can reject a reviewer-only update that
+			// omits the title. When the caller is only changing reviewers,
+			// fetch the current title and include it to keep the PR intact.
+			if (serviceParams.title === undefined) {
+				methodLogger.debug(
+					'Reviewers update without title; fetching current PR title',
+				);
+				const currentPr = await atlassianPullRequestsService.get({
+					workspace: serviceParams.workspace,
+					repo_slug: serviceParams.repo_slug,
+					pull_request_id: serviceParams.pull_request_id,
+				});
+				serviceParams.title = currentPr.title;
+			}
 		}
 
 		// Call service to update the pull request

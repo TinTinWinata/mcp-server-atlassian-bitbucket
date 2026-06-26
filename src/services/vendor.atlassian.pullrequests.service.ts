@@ -622,9 +622,13 @@ async function update(
 	}
 
 	// At least one field to update must be provided
-	if (!params.title && !params.description) {
+	if (
+		!params.title &&
+		!params.description &&
+		(!params.reviewers || params.reviewers.length === 0)
+	) {
 		throw new Error(
-			'At least one field to update (title or description) must be provided',
+			'At least one field to update (title, description, or reviewers) must be provided',
 		);
 	}
 
@@ -644,6 +648,10 @@ async function update(
 	}
 	if (params.description !== undefined) {
 		requestBody.description = params.description;
+	}
+	if (params.reviewers !== undefined) {
+		// Bitbucket replaces the entire reviewer list with the array provided.
+		requestBody.reviewers = params.reviewers;
 	}
 
 	methodLogger.debug(`Sending PUT request to: ${path}`);

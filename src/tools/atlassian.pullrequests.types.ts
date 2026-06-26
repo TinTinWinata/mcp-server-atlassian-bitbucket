@@ -387,6 +387,16 @@ export const UpdatePullRequestToolArgs = z.object({
 		.describe(
 			'Updated description for the pull request in Markdown format. Supports standard Markdown syntax including headings, lists, code blocks, and links.',
 		),
+
+	/**
+	 * Reviewers to assign to the pull request
+	 */
+	reviewers: z
+		.array(z.string().min(1))
+		.optional()
+		.describe(
+			'List of reviewers to assign to the pull request, identified by their Atlassian account ID (e.g. "557058:1234abcd-..."). This REPLACES the current reviewer list with exactly the accounts provided; pass an empty array to remove all reviewers. You can obtain account IDs from the reviewers/author fields of bb_get_pr, or from workspace member tools.',
+		),
 });
 
 export type UpdatePullRequestToolArgsType = z.infer<

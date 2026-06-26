@@ -475,6 +475,13 @@ export interface UpdatePullRequestParams {
 	 * Updated description for the pull request
 	 */
 	description?: string;
+
+	/**
+	 * Reviewers to assign to the pull request.
+	 * Each reviewer is identified by their Atlassian account_id or uuid.
+	 * Note: Bitbucket replaces the entire reviewer list with the one provided.
+	 */
+	reviewers?: Array<{ account_id?: string; uuid?: string }>;
 }
 
 /**

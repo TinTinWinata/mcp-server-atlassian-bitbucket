@@ -443,6 +443,10 @@ function registerUpdatePullRequestCommand(program: Command): void {
 			'--description <text>',
 			'Updated description for the pull request.',
 		)
+		.option(
+			'--reviewers <accountIds>',
+			'Comma-separated list of Atlassian account IDs to assign as reviewers. This REPLACES the current reviewer list. Use "" (empty) to clear all reviewers. Example: "557058:abc...,557059:def..."',
+		)
 		.action(async (options) => {
 			const actionLogger = Logger.forContext(
 				'cli/atlassian.pullrequests.cli.ts',
@@ -451,10 +455,23 @@ function registerUpdatePullRequestCommand(program: Command): void {
 			try {
 				actionLogger.debug('Processing command options:', options);
 
+				// Parse reviewers (comma-separated) into an array when provided
+				const reviewers =
+					options.reviewers !== undefined
+						? options.reviewers
+								.split(',')
+								.map((id: string) => id.trim())
+								.filter((id: string) => id.length > 0)
+						: undefined;
+
 				// Validate that at least one field to update is provided
-				if (!options.title && !options.description) {
+				if (
+					!options.title &&
+					!options.description &&
+					reviewers === undefined
+				) {
 					throw new Error(
-						'At least one field to update (title or description) must be provided',
+						'At least one field to update (title, description, or reviewers) must be provided',
 					);
 				}
 
@@ -465,6 +482,7 @@ function registerUpdatePullRequestCommand(program: Command): void {
 					pullRequestId: options.pullRequestId,
 					title: options.title,
 					description: options.description,
+					reviewers,
 				};
 
 				actionLogger.debug('Updating pull request:', {

@@ -443,10 +443,11 @@ function registerTools(server: McpServer) {
 		pullRequestId: UpdatePullRequestToolArgs.shape.pullRequestId,
 		prTitle: UpdatePullRequestToolArgs.shape.title, // Renamed from 'title' to 'prTitle'
 		description: UpdatePullRequestToolArgs.shape.description,
+		reviewers: UpdatePullRequestToolArgs.shape.reviewers,
 	});
 	server.tool(
 		'bb_update_pr',
-		`Updates an existing pull request in a repository (\`repoSlug\`) identified by \`pullRequestId\`. If \`workspaceSlug\` is not provided, the system will use your default workspace. You can update the \`prTitle\` (the PR title) and/or \`description\` fields. At least one field must be provided. The \`description\` parameter accepts Markdown-formatted text. Returns the updated pull request details as formatted Markdown. Requires Bitbucket credentials with write permissions to be configured.`,
+		`Updates an existing pull request in a repository (\`repoSlug\`) identified by \`pullRequestId\`. If \`workspaceSlug\` is not provided, the system will use your default workspace. You can update the \`prTitle\` (the PR title), \`description\`, and/or assign \`reviewers\` (an array of Atlassian account IDs that REPLACES the current reviewer list; pass an empty array to clear reviewers). At least one field must be provided. The \`description\` parameter accepts Markdown-formatted text. Returns the updated pull request details as formatted Markdown. Requires Bitbucket credentials with write permissions to be configured.`,
 		updatePrSchema.shape,
 		async (args: Record<string, unknown>) => {
 			// Map prTitle back to title for the controller
