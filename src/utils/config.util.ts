@@ -92,7 +92,7 @@ class ConfigLoader {
 			// Determine the potential keys for the current package
 			const shortKey = 'bitbucket'; // Project-specific short key
 			const atlassianProductKey = 'atlassian-bitbucket'; // New supported key
-			const fullPackageName = this.packageName; // e.g., '@aashari/mcp-server-atlassian-bitbucket'
+			const fullPackageName = this.packageName; // e.g., '@tintinwinata/mcp-server-atlassian-bitbucket'
 			const unscopedPackageName =
 				fullPackageName.split('/')[1] || fullPackageName; // e.g., 'mcp-server-atlassian-bitbucket'
 
@@ -173,5 +173,5 @@ class ConfigLoader {
 
 // Create and export a singleton instance with the package name from package.json
 export const config = new ConfigLoader(
-	'@aashari/mcp-server-atlassian-bitbucket',
+	'@tintinwinata/mcp-server-atlassian-bitbucket',
 );

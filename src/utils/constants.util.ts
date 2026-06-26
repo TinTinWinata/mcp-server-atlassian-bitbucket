@@ -15,7 +15,7 @@ export const VERSION = '1.23.6';
  * Package name with scope
  * Used for initialization and identification
  */
-export const PACKAGE_NAME = '@aashari/mcp-server-atlassian-bitbucket';
+export const PACKAGE_NAME = '@tintinwinata/mcp-server-atlassian-bitbucket';
 
 /**
  * CLI command name
